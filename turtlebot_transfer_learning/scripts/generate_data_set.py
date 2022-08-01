@@ -5,7 +5,7 @@ import random
 
 from std_srvs.srv import Empty
 from std_msgs.msg import Empty
-from turtlebot_transfer_learning_srvs.srv import PrimativeMoveAction
+from turtlebot_transfer_learning_srvs.srv import PrimitiveAction
 
 
 class GenerateData(object):
@@ -25,7 +25,7 @@ class GenerateData(object):
 
         # Create service clients
         self.image_saver = rospy.ServiceProxy("/image_saver/save", Empty)
-        self.move_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimativeMoveAction)
+        self.move_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimitiveAction)
 
         # Get data set params
         self.images_per_episode = 100
@@ -70,7 +70,7 @@ class GenerateData(object):
 
                 # Take random action
                 random_action = random.choice(actions)
-                move_req = PrimativeMoveAction()
+                move_req = PrimitiveAction()
                 move_req.action = random_action
                 move_response = self.move_action(move_req)
                 rospy.loginfo(move_response.message)
