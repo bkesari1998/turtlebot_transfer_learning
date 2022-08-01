@@ -2,9 +2,6 @@
 
 import rospy
 
-from geometry_msgs.msg import Twist, Pose2D
-from nav_msgs.msg import Odometry
-
 from turtlebot_transfer_learning_srvs.srv import PrimitiveAction
 
 from actionlib_msgs.msg import GoalStatus
@@ -21,6 +18,7 @@ class PrimativeMoveAction(object):
         # Initialize ROS node
         rospy.init_node("primative_move_action")
         rospy.on_shutdown(self.shudown())
+        rospy.loginfo("primitive_move_action node active")
 
         # Primative move actions are forward, backward, counter_clockwise, clockwise
         # Get values for move actions from ros param
@@ -39,9 +37,12 @@ class PrimativeMoveAction(object):
             if type(param_primative_action_values) != dict:
                 raise TypeError
 
-            if param_primative_action_values.keys() != self.primative_action_values.keys():
+            if (
+                param_primative_action_values.keys()
+                != self.primative_action_values.keys()
+            ):
                 raise ValueError
-            
+
             self.primative_action_values = param_primative_action_values
         except rospy.ROSException:
             rospy.logwarn(
@@ -62,13 +63,17 @@ class PrimativeMoveAction(object):
 
         # Initialize service
         self.primative_move_srv = rospy.Service(
-            "primative_move_action_srv", PrimitiveAction, self.move_action_srv_hanlder
+            "/turtlebot_transfer_learning/primative_move_action",
+            PrimitiveAction,
+            self.move_action_srv_hanlder,
         )
+        rospy.loginfo("/turtlebot_transfer_learning/primative_move_action service active")
 
         # Initialize action client
-        self.action_client = actionlib.SimpleActionClient("turtlebot_move", TurtlebotMoveAction)
+        self.action_client = actionlib.SimpleActionClient(
+            "turtlebot_move", TurtlebotMoveAction
+        )
         self.action_client.wait_for_server()
-
 
         while not rospy.is_shutdown():
             rospy.spin()
@@ -77,12 +82,12 @@ class PrimativeMoveAction(object):
         """
         Handles call to primative move action service.
         param req: PrimativeAction request
-        returns: PrimativeAction response. 
+        returns: PrimativeAction response.
         """
-        
+
         # Create goal
         action_goal = TurtlebotMoveGoal()
-        
+
         if req.action == "forward":
             action_goal.forward_distance = self.primative_action_values["forward"]
             action_goal.turn_distance = 0
@@ -91,19 +96,34 @@ class PrimativeMoveAction(object):
             action_goal.turn_distance = 0
         elif req.action == "counter_clockwise":
             action_goal.forward_distance = 0
-            action_goal.turn_distance = self.primative_action_values["counter_clockwise"]
+            action_goal.turn_distance = self.primative_action_values[
+                "counter_clockwise"
+            ]
         elif req.action == "clockwise":
             action_goal.forward_distance = 0
             action_goal.turn_distance = self.primative_action_values["clockwise"]
         else:
-            # Service request provided unexpected action     
+            # Service request provided unexpected action
             return False, "Provided action is not included as a primative action"
 
         # Send goal
-        if self.action_client.send_goal_and_wait(action_goal, rospy.Duration(2), rospy.Duration(2)) == GoalStatus.SUCCEEDED:
+        if (
+            self.action_client.send_goal_and_wait(
+                action_goal, rospy.Duration(2), rospy.Duration(2)
+            )
+            == GoalStatus.SUCCEEDED
+        ):
             return True, "Turtlebot successfully execututed primative move action"
         else:
             return False, "Turtlebot failed to execute primative move action"
 
 
-        
+    def shutdown(self):
+        """
+        Called on node shutdown.
+        """
+
+        rospy.loginfo("primitive_move_action node shutdown")
+
+if __name__ == '__main__':
+    PrimativeMoveAction()
