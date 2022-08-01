@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   std_srvs
   turtlebot
+  turtlebot_transfer_learning_srvs
 )
 
 ## System dependencies are found with CMake's conventions
