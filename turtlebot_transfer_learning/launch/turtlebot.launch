@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+    <rosparam file="$(find turtlebot_transfer_learning)/config/actions.yaml" />
+    <rosparam file="$(find turtlebtot_transfer_learning)/config/dataset.yaml" />
+    <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
+    <include file="$(find turtlebot_bringup)/launch/3dsensor.launch" />
+    <node name="image_saver" pkg="image_view" type="image_saver.py" >
+        <arg name="image_view/file_format" value="/data/%04d.jpg" />
+        <arg name="image_view/save_all_image" value="false" />
+    </node>
+    <node name="primative_move_actions" pkg="turtlebot_transfer_learning" type="primitive_move_actions.py"/>
+</launch>

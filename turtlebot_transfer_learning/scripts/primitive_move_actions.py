@@ -16,9 +16,9 @@ class PrimativeMoveAction(object):
         """
 
         # Initialize ROS node
-        rospy.init_node("primative_move_action")
+        rospy.init_node("primative_move_actions")
         rospy.on_shutdown(self.shudown())
-        rospy.loginfo("primitive_move_action node active")
+        rospy.loginfo("primitive_move_actions node active")
 
         # Primative move actions are forward, backward, counter_clockwise, clockwise
         # Get values for move actions from ros param
