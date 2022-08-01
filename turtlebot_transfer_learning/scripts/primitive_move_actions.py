@@ -5,7 +5,7 @@ import rospy
 from geometry_msgs.msg import Twist, Pose2D
 from nav_msgs.msg import Odometry
 
-from turtlebot_transfer_learning_srvs.srv import PrimativeAction
+from turtlebot_transfer_learning_srvs.srv import PrimitiveAction
 
 from actionlib_msgs.msg import GoalStatus
 import actionlib
@@ -62,7 +62,7 @@ class PrimativeMoveAction(object):
 
         # Initialize service
         self.primative_move_srv = rospy.Service(
-            "primative_move_action_srv", PrimativeAction, self.move_action_srv_hanlder
+            "primative_move_action_srv", PrimitiveAction, self.move_action_srv_hanlder
         )
 
         # Initialize action client
