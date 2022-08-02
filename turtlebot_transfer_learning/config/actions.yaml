@@ -1,0 +1,6 @@
+turtlebot_transfer_learning/primative_move_action : {
+  "forward": 0.1,
+  "backward": -0.1,
+  "counter_clockwise": 0.314,
+  "clockwise": -0.314,
+}
