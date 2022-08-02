@@ -82,6 +82,8 @@ class GenerateData(object):
                 rospy.wait_for_message("/turtlebot_transfer_learning/episode_reset", Empty, rospy.Duration(120))
             except rospy.ROSException:
                 rospy.logwarn("Reset not recieved, continuing with data collection")
+
+            rospy.sleep(60)
         
         rospy.loginfo("Data collection complete")
 
