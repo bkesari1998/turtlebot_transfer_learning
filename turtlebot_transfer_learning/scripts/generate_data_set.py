@@ -1,9 +1,9 @@
-# /usr/bin/env python
+#!/usr/bin/env python
 
 import rospy
 import random
 
-from std_srvs.srv import Empty
+from std_srvs.srv import Empty as srv_empty
 from std_msgs.msg import Empty
 from turtlebot_transfer_learning_srvs.srv import PrimitiveAction
 
@@ -20,11 +20,11 @@ class GenerateData(object):
         rospy.loginfo("generate_data node active")
 
         # Wait for services
-        rospy.wait_for_service("/image_saver/save")
+        rospy.wait_for_service("/camera_controller/save")
         rospy.wait_for_service("/turtlebot_transfer_learning/primative_move_action")
 
         # Create service clients
-        self.image_saver = rospy.ServiceProxy("/image_saver/save", Empty)
+        self.image_saver = rospy.ServiceProxy("/camera_controller/save", srv_empty)
         self.move_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimitiveAction)
 
         # Get data set params
@@ -63,20 +63,19 @@ class GenerateData(object):
     
     def generate_data_set(self):
 
-        actions = ["forward", "backward", "left", "right"]
+        actions = ["forward", "backward", "clockwise", "counter_clockwise"]
 
-        for epidsode in self.total_episodes:
-            for image in self.images_per_episode:
+        for epidsode in range(self.total_episodes):
+            for image in range(self.images_per_episode):
 
                 # Take random action
                 random_action = random.choice(actions)
-                move_req = PrimitiveAction()
-                move_req.action = random_action
-                move_response = self.move_action(move_req)
+                move_response = self.move_action(random_action)
                 rospy.loginfo(move_response.message)
+                rospy.sleep(1)
 
                 # Save photo
-                self.image_saver(Empty())
+                self.image_saver()
 
             rospy.loginfo("Episode %d complete, waiting for object reset" % epidsode)
             try: 
