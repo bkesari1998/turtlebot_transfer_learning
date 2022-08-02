@@ -17,7 +17,7 @@ class PrimativeMoveAction(object):
 
         # Initialize ROS node
         rospy.init_node("primative_move_actions")
-        rospy.on_shutdown(self.shudown())
+        rospy.on_shutdown(self.shutdown)
         rospy.loginfo("primitive_move_actions node active")
 
         # Primative move actions are forward, backward, counter_clockwise, clockwise
@@ -38,8 +38,8 @@ class PrimativeMoveAction(object):
                 raise TypeError
 
             if (
-                param_primative_action_values.keys()
-                != self.primative_action_values.keys()
+                set(param_primative_action_values.keys())
+                != set(self.primative_action_values.keys())
             ):
                 raise ValueError
 
@@ -65,7 +65,7 @@ class PrimativeMoveAction(object):
         self.primative_move_srv = rospy.Service(
             "/turtlebot_transfer_learning/primative_move_action",
             PrimitiveAction,
-            self.move_action_srv_hanlder,
+            self.move_action_srv_handler,
         )
         rospy.loginfo("/turtlebot_transfer_learning/primative_move_action service active")
 
