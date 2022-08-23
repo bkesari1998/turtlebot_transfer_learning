@@ -21,11 +21,11 @@ class GenerateData(object):
 
         # Wait for services
         rospy.wait_for_service("/camera_controller/save")
-        rospy.wait_for_service("/turtlebot_transfer_learning/primative_move_action")
+        rospy.wait_for_service("/turtlebot_transfer_learning/primative_move_actions")
 
         # Create service clients
         self.image_saver = rospy.ServiceProxy("/camera_controller/save", srv_empty)
-        self.move_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimitiveAction)
+        self.move_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_actions", PrimitiveAction)
 
         # Get data set params
         self.images_per_episode = 100
