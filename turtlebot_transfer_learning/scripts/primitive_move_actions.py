@@ -32,7 +32,7 @@ class PrimativeMoveAction(object):
 
         try:
             param_primative_action_values = rospy.get_param(
-                "/turtlebot_transfer_learning/primative_move_action"
+                "/turtlebot_transfer_learning/primative_move_actions"
             )
             if type(param_primative_action_values) != dict:
                 raise TypeError
@@ -50,11 +50,11 @@ class PrimativeMoveAction(object):
             )
         except KeyError:
             rospy.logwarn(
-                "Value not set and default not given for '/turtlebot_transfer_learning/primative_move_action'. Resorting to in-node default primative action values"
+                "Value not set and default not given for '/turtlebot_transfer_learning/primative_move_actions'. Resorting to in-node default primative action values"
             )
         except TypeError:
             rospy.logwarn(
-                "Value of param '/turtlebot_transfer_learning/primative_move_action' is not of type 'dict'. Resorting to in-node primative action values."
+                "Value of param '/turtlebot_transfer_learning/primative_move_actions' is not of type 'dict'. Resorting to in-node primative action values."
             )
         except ValueError:
             rospy.logwarn(
