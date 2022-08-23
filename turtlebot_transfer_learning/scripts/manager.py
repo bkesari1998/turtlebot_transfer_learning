@@ -4,7 +4,7 @@ import rospy
 
 from std_msgs.msg import Empty
 from sensor_msgs.msg import Image
-from turtlebot_transfer_learning_srvs.srv import PrimitiveMove
+from turtlebot_transfer_learning_srvs.srv import PrimitiveAction
 
  # Import OpenCV libraries and tools
 import cv2
@@ -31,7 +31,7 @@ class Manager(object):
         self.bridge = CvBridge()
 
         # Create service proxy for primitive moves
-        self.move = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimitiveMove)
+        self.move = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimitiveAction)
 
         try:
             self.time_steps = rospy.get_param("turtlebot_transfer_learning/time_steps")
@@ -50,9 +50,9 @@ class Manager(object):
             
             try:
                 rgb_img = rospy.wait_for_message("/camera/rgb/image_raw", Image, rospy.Duration(1))
-                depth_img = rospy.wait_for_message("/camera/depth_registered/image_raw", Image, rospy.Duration(1))
+                # depth_img = rospy.wait_for_message("/camera/depth_registered/image_raw", Image, rospy.Duration(1))
                 cv_image_rgb = self.bridge.imgmsg_to_cv2(rgb_img, "passthrough")
-                cv_image_depth = self.bridge.imgmsg_to_cv2(depth_img, "passthrough")
+                # cv_image_depth = self.bridge.imgmsg_to_cv2(depth_img, "passthrough")
 
             except rospy.ROSException:
                 rospy.logerr("Image not recieved")
@@ -61,10 +61,10 @@ class Manager(object):
                 rospy.logerr("Unable to convert image message to cv2 image")
                 rospy.signal_shutdown()
 
-            # Check for done
-            if self.done(cv_image_rgb, cv_image_depth):
-                rospy.loginfo("Turtlebot navigated to goal position")
-                break
+            # # Check for done
+            # if self.done(cv_image_rgb, cv_image_depth):
+            #     rospy.loginfo("Turtlebot navigated to goal position")
+            #     break
             
             # Get the action from the ppo network
             action = ppo.get_action(cv_image_rgb)
