@@ -38,8 +38,8 @@ class Manager(object):
         except (KeyError, rospy.ROSException):
             rospy.logwarn("Error retrieving 'time_steps' parameter, defaulting to 100")
             self.time_steps = 100
-
-
+        
+        self.action_list = ["forward", "backward", "counter_clockwise", "clockwise"]
 
         while not rospy.is_shutdown:
             rospy.spin()
@@ -67,10 +67,10 @@ class Manager(object):
             #     break
             
             # Get the action from the ppo network
-            action = ppo.get_action(cv_image_rgb)
+            action_num = ppo.get_action(cv_image_rgb)
 
             # Move the robot
-            self.move(action)
+            self.move(self.action_list[action_num])
 
     def done(self, cv_image_rgb, cv_image_depth):
 
