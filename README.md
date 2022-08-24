@@ -9,5 +9,4 @@ assign values to each of the four primitive move actions. On the turtlebot's com
 
 ## Running experiment
 In `config/actions.yaml`, 
-assign values to each of the four primitive move actions. On the turtlebot's computer, launch both `image.launch` and
-`turtlebot.launch`. Run `manager.py` using `rosrun` or a python interpreter.
+assign values to each of the four primitive move actions. On the turtelbot's computer, on a ROS melodic catkin workspace built on python 2.7, launch `turtlebot.launch` and `image.launch`. Then on a different catkin workspace with python3 support, either on a remote computer or the turtlebot's compute, run `ppo_manager.py` using python3. Finally, on the original catkin workspace, run `manager.py`.
