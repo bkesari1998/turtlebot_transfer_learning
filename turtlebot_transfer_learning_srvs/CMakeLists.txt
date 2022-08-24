@@ -56,6 +56,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   PrimitiveAction.srv
+  PPO_Action.srv
 )
 
 ## Generate actions in the 'action' folder

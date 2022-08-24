@@ -4,7 +4,7 @@ import rospy
 
 from std_msgs.msg import Empty
 from sensor_msgs.msg import Image
-from turtlebot_transfer_learning_srvs.srv import PrimitiveAction
+from turtlebot_transfer_learning_srvs.srv import PrimitiveAction, PPO_Action
 
  # Import OpenCV libraries and tools
 import cv2
@@ -31,27 +31,27 @@ class Manager(object):
         self.bridge = CvBridge()
 
         # Create service proxy for primitive moves
+        self.get_action = rospy.ServiceProxy("ppo_action_srv", PPO_Action)
         self.move = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_action", PrimitiveAction)
 
         try:
             self.time_steps = rospy.get_param("turtlebot_transfer_learning/time_steps")
         except (KeyError, rospy.ROSException):
             rospy.logwarn("Error retrieving 'time_steps' parameter, defaulting to 100")
-            self.time_steps = 100
+            self.time_steps = 500
         
-        self.action_list = ["forward", "backward", "counter_clockwise", "clockwise"]
+        self.action_list = ["clockwise", "counter_clockwise", "forward", "backward"]
 
-        while not rospy.is_shutdown:
-            rospy.spin()
+        self.run_episode()
 
-    def run_episode(self, msg):
+    def run_episode(self):
 
         for i in range(self.time_steps):
             
             try:
                 rgb_img = rospy.wait_for_message("/camera/rgb/image_raw", Image, rospy.Duration(1))
                 # depth_img = rospy.wait_for_message("/camera/depth_registered/image_raw", Image, rospy.Duration(1))
-                cv_image_rgb = self.bridge.imgmsg_to_cv2(rgb_img, "passthrough")
+                cv_image_rgb = self.bridge.imgmsg_to_cv2(rgb_img, "rgb8")
                 # cv_image_depth = self.bridge.imgmsg_to_cv2(depth_img, "passthrough")
 
             except rospy.ROSException:
@@ -65,12 +65,15 @@ class Manager(object):
             # if self.done(cv_image_rgb, cv_image_depth):
             #     rospy.loginfo("Turtlebot navigated to goal position")
             #     break
-            
-            # Get the action from the ppo network
-            action_num = ppo.get_action(cv_image_rgb)
+
+            resized_cv_image = cv2.resize(cv_image_rgb, (100, 100))
+            action_num = self.get_action((resized_cv_image.flatten()).tolist())
 
             # Move the robot
-            self.move(self.action_list[action_num])
+            self.move(self.action_list[int(action_num.action)])
+
+    def shutdown(self):
+        pass
 
     def done(self, cv_image_rgb, cv_image_depth):
 
@@ -101,4 +104,5 @@ class Manager(object):
             print(cv_image_depth[cx][cy])
 
 
-            
+if __name__ == '__main__':
+    Manager()
