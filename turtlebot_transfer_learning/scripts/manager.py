@@ -45,9 +45,11 @@ class Manager(object):
         self.run_episode()
 
     def run_episode(self):
-
+        
+        # Run experiment time_steps
         for i in range(self.time_steps):
             
+            # Get image from camera
             try:
                 rgb_img = rospy.wait_for_message("/camera/rgb/image_raw", Image, rospy.Duration(1))
                 # depth_img = rospy.wait_for_message("/camera/depth_registered/image_raw", Image, rospy.Duration(1))
@@ -65,7 +67,8 @@ class Manager(object):
             # if self.done(cv_image_rgb, cv_image_depth):
             #     rospy.loginfo("Turtlebot navigated to goal position")
             #     break
-
+            
+            # Resize image and send to ppo network
             resized_cv_image = cv2.resize(cv_image_rgb, (100, 100))
             action_num = self.get_action((resized_cv_image.flatten()).tolist())
 

@@ -11,7 +11,6 @@ def done(cv_image_rgb, cv_image_depth):
 
     # Convert to hsv colorspace
     hsv = cv2.cvtColor(cv_image_rgb, cv2.COLOR_BGR2HSV)
-    cv_image_rgb
     rgbd = cv2.cvtColor(cv_image_depth, cv2.COLOR_RGB)
 
     # Lower bound and upper bound for gray color
