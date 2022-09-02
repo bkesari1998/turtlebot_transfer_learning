@@ -6,6 +6,7 @@ from std_msgs.msg import Empty
 def episode_reset():
     pub = rospy.Publisher('/turtelbot_transfer_learning/episode_reset', Empty, queue_size=1)
     rospy.init_node('episode_reset', anonymous=True)
+    rospy.loginfo("Episode reset pub up")
     while not rospy.is_shutdown():
         rospy.spin()
 

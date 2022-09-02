@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
     <arg name="image_topic" default="/camera/rgb/image_raw" />
-    <arg name="storage_folder" default="$(find turtlebot_transfer_learning)/data" />
+    <arg name="storage_folder" default="$(find turtlebot_transfer_learning)/data/task_2_cont" />
   
     <node
       name="camera_controller"

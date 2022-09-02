@@ -63,7 +63,7 @@ class PrimativeMoveAction(object):
 
         # Initialize service
         self.primative_move_srv = rospy.Service(
-            "/turtlebot_transfer_learning/primative_move_action",
+            "/turtlebot_transfer_learning/primative_move_actions",
             PrimitiveAction,
             self.move_action_srv_handler,
         )
