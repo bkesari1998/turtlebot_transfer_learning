@@ -9,7 +9,7 @@ assign float values to each of the four primitive move actions. On the turtlebot
 
 ## Running experiment
 In `config/actions.yaml`, 
-assign float values to each of the four primitive move action values and assign an integer to the timesteps_per_episode parameter. On the turtelbot's computer, on a ROS melodic catkin workspace built on python 2.7, launch `turtlebot.launch`. Then on a different catkin workspace with python3 support, either on a remote computer or the turtlebot's compute, run `ppo_manager.py` using python3. Finally, on the original catkin workspace, run `manager.py`. Make sure to source the python3 catkin_ws in the new terminal.
+assign float values to each of the four primitive move action values and assign an integer to the timesteps_per_episode parameter. On the turtelbot's computer, on a ROS melodic catkin workspace built on python 2.7, launch `turtlebot.launch`. Then on a different catkin workspace with python3 support, either on a remote computer or the turtlebot's compute, run `ppo_manager.py` using python3 found in the turtlebot_transfer_learning_python3 package (https://github.com/bkesari1998/turtlebot_transfer_learning_python3). Finally, on the original catkin workspace, run `manager.py`. Make sure to source the python3 catkin_ws in the new terminal.
 
 ## Creating a python3 catkin workspace
 We followed these instructions to build a catkin workspace in melodic compatible with python3: 
