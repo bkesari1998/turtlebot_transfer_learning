@@ -112,10 +112,12 @@ class PrimativeVelocityAction(object):
             rospy.spin()
 
     def velocity_action_srv_handler(self, req):
+        print("In handler")
         move_cmd = Twist()
         if req.action == "continue":
             pass
         elif req.action == "forward":
+            print("in forward")
             if (self.linear < self.max_velocity_values["linear"]):
                 self.linear += self.primative_action_values["forward"]
         elif req.action == "backward":
@@ -134,6 +136,7 @@ class PrimativeVelocityAction(object):
         move_cmd.linear.x = self.linear
         move_cmd.angular.z = self.angular
         self.cmd_vel.publish(move_cmd)
+        print("published")
         self.rate.sleep()
 
     def shutdown(self):
