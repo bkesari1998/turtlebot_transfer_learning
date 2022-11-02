@@ -105,10 +105,12 @@ class PrimativeVelocityAction(object):
         # Initialize publisher
         self.linear = 0
         self.angular = 0
+        self.velocity = Twist()
         self.cmd_vel = rospy.Publisher("cmd_vel_mux/input/navi", Twist, queue_size=10)
         self.rate = rospy.Rate(10)
 
         while not rospy.is_shutdown():
+            self.cmd_vel.publish(self.velocity)
             rospy.spin()
 
     def velocity_action_srv_handler(self, req):
@@ -135,11 +137,10 @@ class PrimativeVelocityAction(object):
         
         move_cmd.linear.x = self.linear
         move_cmd.angular.z = self.angular
-        for i in range(100):
-            self.cmd_vel.publish(move_cmd)
-            self.rate.sleep()
+        
+        self.velocity = move_cmd
 
-        return True, "published velocity command"
+        return True, "adjusted velocity command"
 
     def shutdown(self):
         """
