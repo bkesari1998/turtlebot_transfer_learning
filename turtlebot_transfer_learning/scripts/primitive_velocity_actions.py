@@ -135,9 +135,9 @@ class PrimativeVelocityAction(object):
         
         move_cmd.linear.x = self.linear
         move_cmd.angular.z = self.angular
-        self.cmd_vel.publish(move_cmd)
-        print("published")
-        self.rate.sleep()
+        for i in range(100):
+            self.cmd_vel.publish(move_cmd)
+            self.rate.sleep()
 
         return True, "published velocity command"
 
