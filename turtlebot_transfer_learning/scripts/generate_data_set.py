@@ -21,7 +21,7 @@ class GenerateData(object):
 
         # Wait for services
         # rospy.loginfo("waiting for camera_controller/save")
-        rospy.wait_for_service("/camera_controller/save")
+        # rospy.wait_for_service("/camera_controller/save")
         rospy.wait_for_service("/turtlebot_transfer_learning/primative_velocity_actions")
 
         # Create service clients
