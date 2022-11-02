@@ -116,17 +116,17 @@ class PrimativeVelocityAction(object):
         if req.action == "continue":
             pass
         elif req.action == "forward":
-            if (self.linear < self.max_velocity_values("linear")):
-                self.linear += self.primative_action_values("forward")
+            if (self.linear < self.max_velocity_values["linear"]):
+                self.linear += self.primative_action_values["forward"]
         elif req.action == "backward":
-            if (self.linear > -self.max_velocity_values("linear")):
-                self.linear -= self.primative_action_values("backward")
+            if (self.linear > -self.max_velocity_values["linear"]):
+                self.linear -= self.primative_action_values["backward"]
         elif req.action == "counter_clockwise":
-            if (self.angular < self.max_velocity_values("angular")):
-                self.angular += self.primative_action_values("forward")
+            if (self.angular < self.max_velocity_values["angular"]):
+                self.angular += self.primative_action_values["forward"]
         elif req.action == "clockwise":
-            if (self.angular > -self.max_velocity_values("angular")):
-                self.angular -= self.primative_action_values("forward")
+            if (self.angular > -self.max_velocity_values["angular"]):
+                self.angular -= self.primative_action_values["forward"]
         else:
             self.linear = 0
             self.angular = 0
