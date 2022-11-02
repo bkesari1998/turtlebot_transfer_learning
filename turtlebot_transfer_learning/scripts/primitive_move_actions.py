@@ -24,10 +24,10 @@ class PrimativeMoveAction(object):
         # Get values for move actions from ros param
 
         self.primative_action_values = {
-            "forward": 0.1,
-            "backward": -0.1,
-            "counter_clockwise": 0.5,
-            "clockwise": -0.5,
+            "forward": 0.04,
+            "backward": -0.04,
+            "counter_clockwise": 0.02,
+            "clockwise": -0.02,
         }
 
         try:
@@ -63,7 +63,7 @@ class PrimativeMoveAction(object):
 
         # Initialize service
         self.primative_move_srv = rospy.Service(
-            "/turtlebot_transfer_learning/primative_move_action",
+            "/turtlebot_transfer_learning/primative_move_actions",
             PrimitiveAction,
             self.move_action_srv_handler,
         )

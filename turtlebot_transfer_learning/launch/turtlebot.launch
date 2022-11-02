@@ -5,11 +5,10 @@
     <rosparam file="$(find turtlebot_transfer_learning)/config/dataset.yaml" />
     <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
     <include file="$(find turtlebot_bringup)/launch/3dsensor.launch" />
+    <include file="$(find apriltag_ros)/launch/continuous_detection.launch" >
+        <arg name="camera_name" value="/camera/rgb" />
+        <arg name="image_topic" value="image_raw" />
+    </include>
     <include file="$(find turtlebot_actions)/launch/server_turtlebot_move.launch" />
-    <!-- <node name="image_saver" pkg="image_view" type="image_saver" >
-        <remap from="image" to="$(arg image_topic)" />
-        <param  name="image_view/file_format" value="$(arg storage_folder)/image_%04d.png" />
-        <param name="image_view/save_all_image" value="false" />
-    </node> -->
     <node name="primative_move_actions" pkg="turtlebot_transfer_learning" type="primitive_move_actions.py"/> -->
 </launch>

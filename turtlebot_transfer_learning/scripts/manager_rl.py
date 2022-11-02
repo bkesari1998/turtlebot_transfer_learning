@@ -2,10 +2,14 @@
 
 import rospy
 import time
+import math
 
 from std_msgs.msg import Empty
 from sensor_msgs.msg import Image
 from turtlebot_transfer_learning_srvs.srv import PrimitiveAction, PPO_Action
+from turtlebot_transfer_learning_srvs.msg import NetworkInfo
+
+from apriltag_ros.msg import AprilTagDetectionArray
 
  # Import OpenCV libraries and tools
 import cv2
@@ -17,13 +21,16 @@ class Manager(object):
 
     def __init__(self):
 
+            # # Check for done
+            # if self.done(cv_image_rgb, cv_image_depth):
+            #     rospy.loginfo("Turtlebot navigated to goal position")
+            #     break
         """
         Initializes manager node.
         """
 
         # Initialize manager node 
         rospy.init_node("manager")
-        rospy.on_shutdown(self.shutdown)
 
         # Subscribe to episode reset topic
         self.reset = rospy.Subscriber("turtlebot_transfer_learning/episode_reset", Empty, self.run_episode)
@@ -31,9 +38,14 @@ class Manager(object):
         # Create CvBridge 
         self.bridge = CvBridge()
 
+        self.net_info_pub = rospy.Publisher("net_info", NetworkInfo, queue_size=1)
+
         # Create service proxy for primitive moves
+        rospy.wait_for_service("ppo_action_srv")
         self.get_action = rospy.ServiceProxy("ppo_action_srv", PPO_Action)
         self.move = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_actions", PrimitiveAction)
+
+        self.rate = rospy.Rate(10)
 
         try:
             self.time_steps = rospy.get_param("turtlebot_transfer_learning/time_steps")
@@ -42,15 +54,20 @@ class Manager(object):
             self.time_steps = 500
         
         self.action_list = ["clockwise", "counter_clockwise", "forward", "backward"]
+        self.counter = 0
 
-        self.start_time = time.time()
-        self.run_episode()
+        while True:
+            rospy.loginfo("Episode " + str(self.counter) + ":")
+            self.run_episode()
+            msg = ""
+            while msg != "y":
+                msg = raw_input("Ready for next episode? (y/n): ")
+            self.counter += 1
 
     def run_episode(self):
         
         # Run experiment time_steps
-        for i in range(self.time_steps):
-            
+        for i in range(100):
             # Get image from camera
             try:
                 rgb_img = rospy.wait_for_message("/camera/rgb/image_raw", Image, rospy.Duration(1))
@@ -64,11 +81,6 @@ class Manager(object):
             except CvBridgeError:
                 rospy.logerr("Unable to convert image message to cv2 image")
                 rospy.signal_shutdown()
-
-            # # Check for done
-            # if self.done(cv_image_rgb, cv_image_depth):
-            #     rospy.loginfo("Turtlebot navigated to goal position")
-            #     break
             
             # Resize image and send to ppo network
             resized_cv_image = cv2.resize(cv_image_rgb, (100, 100))
@@ -77,10 +89,37 @@ class Manager(object):
             # Move the robot
             rospy.loginfo("Timestep " + str(i) + ": " + self.action_list[int(action_num.action)])
             self.move(self.action_list[int(action_num.action)])
-            # rospy.sleep(1)
+            
+            tag_detections = rospy.wait_for_message("tag_detections", AprilTagDetectionArray)
+            
+            reward = -1
+            end_episode = False
+            reached_goal = False
 
-    def shutdown(self):
-        pass
+            if len(tag_detections.detections) != 0:
+                for detection in tag_detections.detections:
+                    if detection.pose.pose.pose.position.z < 0.3:
+                        reward = 1000
+                        end_episode = True
+                        reached_goal = True
+                        break
+                    else:
+                        if i == 99:
+                            end_episode = True
+            else:
+                if i == 99:
+                    end_episode = True
+
+            
+            msg = NetworkInfo()
+            msg.reward = reward
+            msg.end_episode = end_episode
+            msg.goal_reached = reached_goal
+            self.net_info_pub.publish(msg)
+            self.rate.sleep()
+
+            if end_episode == True:
+                return         
 
     def done(self, cv_image_rgb, cv_image_depth):
 
