@@ -139,6 +139,8 @@ class PrimativeVelocityAction(object):
         print("published")
         self.rate.sleep()
 
+        return True, "published velocity command"
+
     def shutdown(self):
         """
         Called on node shutdown.
