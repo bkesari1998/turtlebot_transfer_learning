@@ -22,7 +22,9 @@ class GenerateData(object):
         # Wait for services
         # rospy.loginfo("waiting for camera_controller/save")
         # rospy.wait_for_service("/camera_controller/save")
+        rospy.loginfo("Waiting for service")
         rospy.wait_for_service("/turtlebot_transfer_learning/primative_velocity_actions")
+        rospy.loginfo("All services up")
 
         # Create service clients
         # self.image_saver = rospy.ServiceProxy("/camera_controller/save", srv_empty)
