@@ -20,12 +20,12 @@ class GenerateData(object):
         rospy.loginfo("generate_data node active")
 
         # Wait for services
-        rospy.loginfo("waiting for camera_controller/save")
+        # rospy.loginfo("waiting for camera_controller/save")
         rospy.wait_for_service("/camera_controller/save")
         rospy.wait_for_service("/turtlebot_transfer_learning/primative_velocity_actions")
 
         # Create service clients
-        self.image_saver = rospy.ServiceProxy("/camera_controller/save", srv_empty)
+        # self.image_saver = rospy.ServiceProxy("/camera_controller/save", srv_empty)
         self.velocity_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_velocity_actions", PrimitiveAction)
 
         # Get data set params
@@ -78,7 +78,7 @@ class GenerateData(object):
                 rospy.sleep(0.5)
 
                 # Save photo
-                self.image_saver()
+                # self.image_saver()
 
             rospy.loginfo("Episode %d complete, waiting for object reset" % epidsode)
             try: 
