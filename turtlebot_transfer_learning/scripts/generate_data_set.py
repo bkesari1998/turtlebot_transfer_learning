@@ -21,11 +21,11 @@ class GenerateData(object):
 
         # Wait for services
         rospy.wait_for_service("/camera_controller/save")
-        rospy.wait_for_service("/turtlebot_transfer_learning/primative_move_actions")
+        rospy.wait_for_service("/turtlebot_transfer_learning/primative_velocity_actions")
 
         # Create service clients
         self.image_saver = rospy.ServiceProxy("/camera_controller/save", srv_empty)
-        self.move_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_move_actions", PrimitiveAction)
+        self.velocity_action = rospy.ServiceProxy("/turtlebot_transfer_learning/primative_velocity_actions", PrimitiveAction)
 
         # Get data set params
         self.images_per_episode = 100
@@ -63,14 +63,14 @@ class GenerateData(object):
     
     def generate_data_set(self):
 
-        actions = ["forward", "backward", "clockwise", "counter_clockwise"]
+        actions = ["forward", "backward", "clockwise", "counter_clockwise", "continue", "stop"]
 
         for epidsode in range(self.total_episodes):
             for image in range(self.images_per_episode):
 
                 # Take random action
                 random_action = random.choice(actions)
-                move_response = self.move_action(random_action)
+                move_response = self.velocity_action(random_action)
                 rospy.loginfo(move_response.message)
                 rospy.sleep(1)
 
