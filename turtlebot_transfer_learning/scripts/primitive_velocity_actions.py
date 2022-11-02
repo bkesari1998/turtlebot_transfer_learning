@@ -111,7 +111,7 @@ class PrimativeVelocityAction(object):
 
         while not rospy.is_shutdown():
             self.cmd_vel.publish(self.velocity)
-            rospy.spin()
+            self.rate.sleep()
 
     def velocity_action_srv_handler(self, req):
         print("In handler")
