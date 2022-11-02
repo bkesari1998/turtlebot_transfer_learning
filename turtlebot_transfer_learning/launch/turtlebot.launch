@@ -10,5 +10,5 @@
         <arg name="image_topic" value="image_raw" />
     </include>
     <include file="$(find turtlebot_actions)/launch/server_turtlebot_move.launch" />
-    <node name="primative_move_actions" pkg="turtlebot_transfer_learning" type="primitive_move_actions.py"/> -->
+    <node name="primative_move_actions" pkg="turtlebot_transfer_learning" type="primitive_velocity_actions.py"/> -->
 </launch>
